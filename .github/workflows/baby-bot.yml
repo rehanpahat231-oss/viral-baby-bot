@@ -1,0 +1,35 @@
+name: Viral Baby Video Bot
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:  # Manual button
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Free Tools
+        run: |
+          pip install imageio imageio-ffmpeg pillow numpy requests
+          pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          
+      - name: Run Baby Bot
+        env:
+          YT_TOKEN: ${{ secrets.YT_TOKEN }}
+        run: python main.py
+        
+      - name: Upload Video
+        uses: actions/upload-artifact@v4
+        with:
+          name: baby-video
+          path: outputs/
